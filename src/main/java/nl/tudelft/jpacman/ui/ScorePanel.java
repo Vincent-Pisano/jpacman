@@ -25,9 +25,10 @@ public class ScorePanel extends JPanel {
     private static final long serialVersionUID = 1L;
 
     /**
-     * The map of players and the labels their scores are on.
+     * The map of players and the labels their scores and lives are on.
      */
-    private final Map<Player, JLabel> scoreLabels;
+    private final Map<Player, JLabel> playerLabels;
+
 
     /**
      * The default way in which the score is shown.
@@ -55,26 +56,37 @@ public class ScorePanel extends JPanel {
         for (int i = 1; i <= players.size(); i++) {
             add(new JLabel("Player " + i, JLabel.CENTER));
         }
-        scoreLabels = new LinkedHashMap<>();
+
+        playerLabels = new LinkedHashMap<>();
         for (Player player : players) {
-            JLabel scoreLabel = new JLabel("0", JLabel.CENTER);
-            scoreLabels.put(player, scoreLabel);
-            add(scoreLabel);
+            JLabel label = new JLabel("", JLabel.CENTER);
+            playerLabels.put(player, label);
+            add(label);
         }
+
+        refresh();
     }
+
 
     /**
      * Refreshes the scores of the players.
      */
     protected void refresh() {
-        for (Map.Entry<Player, JLabel> entry : scoreLabels.entrySet()) {
+        for (Map.Entry<Player, JLabel> entry : playerLabels.entrySet()) {
             Player player = entry.getKey();
-            String score = "";
+            String text = "";
+
             if (!player.isAlive()) {
-                score = "You died. ";
+                text += "You died. ";
             }
-            score += scoreFormatter.format(player);
-            entry.getValue().setText(score);
+
+            text += String.format(
+                "Score: %3d | Lives: %d",
+                player.getScore(),
+                player.getRemainingLives()
+            );
+
+            entry.getValue().setText(text);
         }
     }
 
