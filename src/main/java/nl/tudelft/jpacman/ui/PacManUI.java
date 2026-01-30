@@ -3,6 +3,7 @@ package nl.tudelft.jpacman.ui;
 import java.awt.BorderLayout;
 import java.awt.Container;
 import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -69,9 +70,9 @@ public class PacManUI extends JFrame {
                     final Map<Integer, Action> keyMappings,
                     ScoreFormatter scoreFormatter) {
         super("JPacman");
-        assert game != null;
-        assert buttons != null;
-        assert keyMappings != null;
+        Objects.requireNonNull(game, "game must not be null");
+        Objects.requireNonNull(buttons, "buttons must not be null");
+        Objects.requireNonNull(keyMappings, "keyMappings must not be null");
 
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 

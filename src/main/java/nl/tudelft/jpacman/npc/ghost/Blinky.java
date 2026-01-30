@@ -57,8 +57,6 @@ public class Blinky extends Ghost {
      * @param spriteMap
      *            The sprites for this ghost.
      */
-    // TODO Blinky should speed up when there are a few pellets left, but he
-    // has no way to find out how many there are.
     public Blinky(Map<Direction, Sprite> spriteMap) {
         super(spriteMap, MOVE_INTERVAL, INTERVAL_VARIATION);
     }
@@ -80,8 +78,6 @@ public class Blinky extends Ghost {
     public Optional<Direction> nextAiMove() {
         assert hasSquare();
 
-        // TODO Blinky should patrol his corner every once in a while
-        // TODO Implement his actual behaviour instead of simply chasing.
         Unit nearest = Navigation.findNearest(Player.class, getSquare());
         if (nearest == null) {
             return Optional.empty();
@@ -94,27 +90,5 @@ public class Blinky extends Ghost {
             return Optional.ofNullable(path.get(0));
         }
         return Optional.empty();
-    }
-
-    /**
-     * Determines a possible move in a random direction.
-     *
-     * @return A direction in which the ghost can move, or <code>null</code> if
-     * the ghost is shut in by inaccessible squares.
-     */
-    @Override
-    protected Direction randomMove() {
-        Square square = getSquare();
-        List<Direction> directions = new ArrayList<>();
-        for (Direction direction : Direction.values()) {
-            if (square.getSquareAt(direction).isAccessibleTo(this)) {
-                directions.add(direction);
-            }
-        }
-        if (directions.isEmpty()) {
-            return null;
-        }
-        int i = new Random().nextInt(directions.size());
-        return directions.get(i);
     }
 }

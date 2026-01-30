@@ -63,9 +63,12 @@ class BoardPanel extends JPanel {
 
     @Override
     public void paint(Graphics g) {
-        assert g != null;
+        if (g == null) {
+            throw new IllegalArgumentException("Graphics must not be null");
+        }
         render(game.getLevel().getBoard(), g, getSize());
     }
+
 
     /**
      * Renders the board on the given graphics context to the given dimensions.

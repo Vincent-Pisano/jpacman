@@ -3,6 +3,8 @@ package nl.tudelft.jpacman.board;
 import nl.tudelft.jpacman.sprite.PacManSprites;
 import nl.tudelft.jpacman.sprite.Sprite;
 
+import java.util.Objects;
+
 /**
  * A factory that creates {@link Board} objects from 2-dimensional arrays of
  * {@link Square}s.
@@ -36,7 +38,7 @@ public class BoardFactory {
      * @return A new board, wrapping a grid of connected cells.
      */
     public Board createBoard(Square[][] grid) {
-        assert grid != null;
+        Objects.requireNonNull(grid, "The grid must not be null");
 
         Board board = new Board(grid);
 

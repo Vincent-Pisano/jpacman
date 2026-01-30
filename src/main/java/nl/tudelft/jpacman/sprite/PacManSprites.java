@@ -1,8 +1,9 @@
 package nl.tudelft.jpacman.sprite;
 
 import java.io.IOException;
-import java.util.HashMap;
+import java.util.EnumMap;
 import java.util.Map;
+import java.util.Objects;
 
 import nl.tudelft.jpacman.PacmanConfigurationException;
 import nl.tudelft.jpacman.board.Direction;
@@ -81,15 +82,14 @@ public class PacManSprites extends SpriteStore {
      *            The number of frames in this sprite.
      * @return The animated sprite facing the given direction.
      */
-    private Map<Direction, Sprite> directionSprite(String resource, int frames) {
-        Map<Direction, Sprite> sprite = new HashMap<>();
+    private EnumMap<Direction, Sprite> directionSprite(String resource, int frames) {
+        EnumMap<Direction, Sprite> sprite = new EnumMap<>(Direction.class);
 
         Sprite baseImage = loadSprite(resource);
+
         for (int i = 0; i < DIRECTIONS.length; i++) {
-            Sprite directionSprite = baseImage.split(0, i * SPRITE_SIZE, frames
-                * SPRITE_SIZE, SPRITE_SIZE);
-            AnimatedSprite animation = createAnimatedSprite(directionSprite,
-                frames, ANIMATION_DELAY, true);
+            Sprite directionSprite = baseImage.split(0, i * SPRITE_SIZE, frames * SPRITE_SIZE, SPRITE_SIZE);
+            AnimatedSprite animation = createAnimatedSprite(directionSprite, frames, ANIMATION_DELAY, true);
             animation.setAnimating(true);
             sprite.put(DIRECTIONS[i], animation);
         }
@@ -105,7 +105,7 @@ public class PacManSprites extends SpriteStore {
      * @return The Sprite for the ghost.
      */
     public Map<Direction, Sprite> getGhostSprite(GhostColor color) {
-        assert color != null;
+        Objects.requireNonNull(color,"color should not be null");
 
         String resource = "/sprite/ghost_" + color.name().toLowerCase()
             + ".png";

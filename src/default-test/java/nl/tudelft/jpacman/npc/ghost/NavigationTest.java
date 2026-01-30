@@ -73,7 +73,7 @@ class NavigationTest {
         Square s2 = b.squareAt(3, 1);
         List<Direction> path = Navigation
             .shortestPath(s1, s2, mock(Unit.class));
-        assertThat(path).isNull();
+        assertThat(path).isEmpty();
     }
 
     /**

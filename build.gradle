@@ -77,6 +77,12 @@ pmd {
     ruleSets = []
 }
 
+sonarqube {
+    properties {
+        property "sonar.coverage.minimum", "70"
+    }
+}
+
 tasks.withType(com.github.spotbugs.SpotBugsTask) {
     reports {
         xml.enabled = false

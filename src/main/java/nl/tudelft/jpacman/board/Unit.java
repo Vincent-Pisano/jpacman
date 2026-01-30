@@ -2,6 +2,8 @@ package nl.tudelft.jpacman.board;
 
 import nl.tudelft.jpacman.sprite.Sprite;
 
+import java.util.Objects;
+
 /**
  * A unit that can be placed on a {@link Square}.
  *
@@ -71,7 +73,7 @@ public abstract class Unit {
      *            The square to occupy.
      */
     public void occupy(Square target) {
-        assert target != null;
+        Objects.requireNonNull(target, "The square must not be null");
 
         if (square != null) {
             square.remove(this);

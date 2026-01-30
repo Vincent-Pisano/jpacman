@@ -73,7 +73,9 @@ public class AnimatedSprite implements Sprite {
      *            Whether or not this sprite is animating from the start.
      */
     public AnimatedSprite(Sprite[] frames, int delay, boolean loop, boolean isAnimating) {
-        assert frames.length > 0;
+        if(frames.length == 0){
+            throw new IllegalArgumentException("Frames should not be empty");
+        }
 
         this.animationFrames = frames.clone();
         this.animationDelay = delay;

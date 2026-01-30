@@ -11,7 +11,7 @@ import java.util.Properties;
  */
 public class PointCalculatorLoader {
 
-    private static Class clazz = null;
+    private static Class<?> clazz = null;
 
     /**
      * Load a points calculator and return it.
@@ -24,13 +24,15 @@ public class PointCalculatorLoader {
                 clazz = loadClassFromFile();
             }
 
-            return (PointCalculator) clazz.newInstance();
-        } catch (Exception e) {
-            throw new RuntimeException("Could not dynamically load the points calculator.", e);
+            return (PointCalculator) clazz.getDeclaredConstructor().newInstance();
+        } catch (ReflectiveOperationException e) {
+            throw new IllegalStateException("Could not dynamically load the points calculator." + clazz.getName(), e);
+        } catch (IOException e) {
+            throw new IllegalStateException("Failed to load PointCalculator class definition from file.", e);
         }
     }
 
-    private Class loadClassFromFile() throws IOException, ClassNotFoundException {
+    private Class<?> loadClassFromFile() throws IOException, ClassNotFoundException {
         String strategyToLoad = getCalculatorClassName();
 
         if ("DefaultPointCalculator".equals(strategyToLoad)) {

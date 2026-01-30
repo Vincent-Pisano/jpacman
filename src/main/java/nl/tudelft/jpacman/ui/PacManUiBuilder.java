@@ -3,6 +3,7 @@ package nl.tudelft.jpacman.ui;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Objects;
 
 import nl.tudelft.jpacman.game.Game;
 import nl.tudelft.jpacman.ui.ScorePanel.ScoreFormatter;
@@ -61,7 +62,7 @@ public class PacManUiBuilder {
      * @return A new Pac-Man UI with the set keys and buttons.
      */
     public PacManUI build(final Game game) {
-        assert game != null;
+        Objects.requireNonNull(game, "game must not be null");
 
         if (defaultButtons) {
             addStartButton(game);
@@ -78,7 +79,7 @@ public class PacManUiBuilder {
      *            The game to stop.
      */
     private void addStopButton(final Game game) {
-        assert game != null;
+        Objects.requireNonNull(game, "game must not be null");
 
         buttons.put(STOP_CAPTION, game::stop);
     }
@@ -91,7 +92,7 @@ public class PacManUiBuilder {
      *            The game to start.
      */
     private void addStartButton(final Game game) {
-        assert game != null;
+        Objects.requireNonNull(game, "game must not be null");
 
         buttons.put(START_CAPTION, game::start);
     }
@@ -106,8 +107,8 @@ public class PacManUiBuilder {
      * @return The builder.
      */
     public PacManUiBuilder addKey(Integer keyCode, Action action) {
-        assert keyCode != null;
-        assert action != null;
+        Objects.requireNonNull(keyCode, "keyCode must not be null");
+        Objects.requireNonNull(action, "action must not be null");
 
         keyMappings.put(keyCode, action);
         return this;
@@ -123,9 +124,10 @@ public class PacManUiBuilder {
      * @return The builder.
      */
     public PacManUiBuilder addButton(String caption, Action action) {
-        assert caption != null;
-        assert !caption.isEmpty();
-        assert action != null;
+        Objects.requireNonNull(caption, "caption must not be null");
+        if (caption.isEmpty()) {
+            throw new IllegalArgumentException("caption must not be empty");
+        }
 
         buttons.put(caption, action);
         return this;

@@ -1,12 +1,7 @@
 package nl.tudelft.jpacman.level;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
-import java.util.Set;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -90,22 +85,18 @@ public class Level {
      * @param collisionMap
      *            The collection of collisions that should be handled.
      */
-    public Level(Board board, List<Ghost> ghosts, List<Square> startPositions,
-                 CollisionMap collisionMap) {
-        assert board != null;
-        assert ghosts != null;
-        assert startPositions != null;
-
-        this.board = board;
-        this.inProgress = false;
+    public Level(Board board, List<Ghost> ghosts, List<Square> startPositions, CollisionMap collisionMap) {
+        this.board = Objects.requireNonNull(board, "board must not be null");
+        this.startSquares = Objects.requireNonNull(startPositions, "startPositions must not be null");
+        this.collisions = Objects.requireNonNull(collisionMap, "collisionMap must not be null");
+        Objects.requireNonNull(ghosts, "ghosts must not be null");
         this.npcs = new HashMap<>();
         for (Ghost ghost : ghosts) {
             npcs.put(ghost, null);
         }
-        this.startSquares = startPositions;
+        this.inProgress = false;
         this.startSquareIndex = 0;
         this.players = new ArrayList<>();
-        this.collisions = collisionMap;
         this.observers = new HashSet<>();
     }
 
@@ -138,9 +129,10 @@ public class Level {
      *            The player to register.
      */
     public void registerPlayer(Player player) {
-        assert player != null;
-        assert !startSquares.isEmpty();
-
+        Objects.requireNonNull(player, "player must not be null");
+        if (startSquares.isEmpty()) {
+            throw new IllegalStateException("No start squares available");
+        }
         if (players.contains(player)) {
             return;
         }
@@ -170,9 +162,12 @@ public class Level {
      *            The direction to move the unit in.
      */
     public void move(Unit unit, Direction direction) {
-        assert unit != null;
-        assert direction != null;
-        assert unit.hasSquare();
+        Objects.requireNonNull(unit, "unit must not be null");
+        Objects.requireNonNull(direction, "direction must not be null");
+
+        if (!unit.hasSquare()) {
+            throw new IllegalStateException("Cannot move unit: unit is not on a square");
+        }
 
         if (!isInProgress()) {
             return;
@@ -244,7 +239,7 @@ public class Level {
     private void stopNPCs() {
         for (Entry<Ghost, ScheduledExecutorService> entry : npcs.entrySet()) {
             ScheduledExecutorService schedule = entry.getValue();
-            assert schedule != null;
+            Objects.requireNonNull(schedule, "schedule must not be null");
             schedule.shutdownNow();
         }
     }
@@ -308,7 +303,6 @@ public class Level {
                 }
             }
         }
-        assert pellets >= 0;
         return pellets;
     }
 

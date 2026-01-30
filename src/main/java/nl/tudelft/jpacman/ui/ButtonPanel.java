@@ -1,6 +1,7 @@
 package nl.tudelft.jpacman.ui;
 
 import java.util.Map;
+import java.util.Objects;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -25,16 +26,21 @@ class ButtonPanel extends JPanel {
      */
     ButtonPanel(final Map<String, Action> buttons, final JFrame parent) {
         super();
-        assert buttons != null;
-        assert parent != null;
 
-        for (final String caption : buttons.keySet()) {
+        Objects.requireNonNull(buttons, "buttons must not be null");
+        Objects.requireNonNull(parent, "parent must not be null");
+
+        for (Map.Entry<String, Action> entry : buttons.entrySet()) {
+            String caption = entry.getKey();
+            Action action = entry.getValue();
+
             JButton button = new JButton(caption);
             button.addActionListener(e -> {
-                buttons.get(caption).doAction();
+                action.doAction();
                 parent.requestFocusInWindow();
             });
             add(button);
         }
     }
+
 }

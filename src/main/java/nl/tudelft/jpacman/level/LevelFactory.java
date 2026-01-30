@@ -10,6 +10,7 @@ import nl.tudelft.jpacman.points.PointCalculator;
 import nl.tudelft.jpacman.sprite.PacManSprites;
 import nl.tudelft.jpacman.sprite.Sprite;
 
+import java.security.SecureRandom;
 import java.util.*;
 
 /**
@@ -24,6 +25,8 @@ public class LevelFactory {
     private static final int INKY = 1;
     private static final int PINKY = 2;
     private static final int CLYDE = 3;
+
+    public static final SecureRandom RNG = new SecureRandom();
 
     /**
      * The default value of a pellet.
@@ -164,7 +167,7 @@ public class LevelFactory {
             if (directions.isEmpty()) {
                 return null;
             }
-            int i = new Random().nextInt(directions.size());
+            int i = RNG.nextInt(directions.size());
             return directions.get(i);
         }
     }

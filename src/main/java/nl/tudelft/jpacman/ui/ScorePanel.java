@@ -4,9 +4,11 @@ import java.awt.GridLayout;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.SwingConstants;
 
 import nl.tudelft.jpacman.level.Player;
 
@@ -34,7 +36,11 @@ public class ScorePanel extends JPanel {
      * The default way in which the score is shown.
      */
     public static final ScoreFormatter DEFAULT_SCORE_FORMATTER =
-        (Player player) -> String.format("Score: %3d", player.getScore());
+        (Player player) -> String.format(
+            "Score: %3d | Lives: %d",
+            player.getScore(),
+            player.getRemainingLives()
+        );
 
     /**
      * The way to format the score information.
@@ -49,17 +55,18 @@ public class ScorePanel extends JPanel {
      */
     public ScorePanel(List<Player> players) {
         super();
-        assert players != null;
+
+        Objects.requireNonNull(players, "players must not be null");
 
         setLayout(new GridLayout(2, players.size()));
 
         for (int i = 1; i <= players.size(); i++) {
-            add(new JLabel("Player " + i, JLabel.CENTER));
+            add(new JLabel("Player " + i, SwingConstants.CENTER));
         }
 
         playerLabels = new LinkedHashMap<>();
         for (Player player : players) {
-            JLabel label = new JLabel("", JLabel.CENTER);
+            JLabel label = new JLabel("", SwingConstants.CENTER);
             playerLabels.put(player, label);
             add(label);
         }
@@ -80,11 +87,7 @@ public class ScorePanel extends JPanel {
                 text += "You died. ";
             }
 
-            text += String.format(
-                "Score: %3d | Lives: %d",
-                player.getScore(),
-                player.getRemainingLives()
-            );
+            text += scoreFormatter.format(player);
 
             entry.getValue().setText(text);
         }
@@ -105,10 +108,13 @@ public class ScorePanel extends JPanel {
 
     /**
      * Let the score panel use a dedicated score formatter.
+     *
      * @param scoreFormatter Score formatter to be used.
      */
     public void setScoreFormatter(ScoreFormatter scoreFormatter) {
-        assert scoreFormatter != null;
-        this.scoreFormatter = scoreFormatter;
+        this.scoreFormatter = Objects.requireNonNull(
+            scoreFormatter, "scoreFormatter must not be null"
+        );
     }
+
 }

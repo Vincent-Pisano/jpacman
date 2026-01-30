@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 import javax.imageio.ImageIO;
 
@@ -88,18 +89,27 @@ public class SpriteStore {
      */
     public AnimatedSprite createAnimatedSprite(Sprite baseImage, int frames,
                                                int delay, boolean loop) {
-        assert baseImage != null;
-        assert frames > 0;
+
+        Objects.requireNonNull(baseImage, "baseImage must not be null");
+
+        if (frames <= 0) {
+            throw new IllegalArgumentException("frames must be > 0");
+        }
 
         int frameWidth = baseImage.getWidth() / frames;
 
         Sprite[] animation = new Sprite[frames];
         for (int i = 0; i < frames; i++) {
-            animation[i] = baseImage.split(i * frameWidth, 0, frameWidth,
-                baseImage.getHeight());
+            animation[i] = baseImage.split(
+                i * frameWidth,
+                0,
+                frameWidth,
+                baseImage.getHeight()
+            );
         }
 
         return new AnimatedSprite(animation, delay, loop);
     }
+
 
 }
