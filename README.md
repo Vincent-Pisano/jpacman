@@ -26,3 +26,6 @@ This fork contains bad smells and questionable practices (effectively making the
 4. To run the tests use: `./gradlew test`
 5. For static analysis tools (not used in Software Reengineering): `./gradlew staticAnalysis`
 6. For static analysis tools and tests (not used in Software Reengineering): `./gradlew check`
+
+### SonarQube
+1. Run Docker containers with SonarQube: `docker compose up -d --build` in the root of the project

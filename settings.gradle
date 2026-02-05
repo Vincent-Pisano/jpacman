@@ -1,1 +1,18 @@
+pluginManagement {
+    // Load .env properties
+    def localProperties = new Properties()
+    def envFile = new File(rootDir, '.env')
+    if (envFile.exists()) {
+        envFile.withInputStream { localProperties.load(it) }
+    }
+    
+    resolutionStrategy {
+        eachPlugin {
+            if (requested.id.id == 'org.sonarqube') {
+                useVersion localProperties.getProperty('sonarqubeVersion', '3.1.1')
+            }
+        }
+    }
+}
+
 rootProject.name = 'jpacman'
