@@ -5,7 +5,13 @@ plugins {
     id 'checkstyle'
     id 'pmd'
     id 'com.github.spotbugs' version '1.7.1'
-    id 'org.sonarqube' version '3.1.1'
+    id 'org.sonarqube'
+}
+
+def localProperties = new Properties()
+def localPropertiesFile = rootProject.file('.env')
+if (localPropertiesFile.exists()) {
+    localPropertiesFile.withInputStream { localProperties.load(it) }
 }
 
 sourceSets {
@@ -75,6 +81,23 @@ checkstyle {
 pmd {
     ruleSetFiles "pmd-rules.xml"
     ruleSets = []
+}
+
+sonarqube {
+    properties {
+        property "sonar.coverage.jacoco.xmlReportPaths",
+            "${buildDir}/reports/jacoco/test/jacocoTestReport.xml"
+        property "sonar.coverage.minimum", "80"
+        if (localProperties.getProperty('sonar.projectKey')) {
+            property "sonar.projectKey", localProperties.getProperty('sonar.projectKey')
+        }
+        if (localProperties.getProperty('sonar.host.url')) {
+            property "sonar.host.url", localProperties.getProperty('sonar.host.url')
+        }
+        if (localProperties.getProperty('sonar.login')) {
+            property "sonar.login", localProperties.getProperty('sonar.login')
+        }
+    }
 }
 
 tasks.withType(com.github.spotbugs.SpotBugsTask) {
