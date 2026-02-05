@@ -148,27 +148,5 @@ public class LevelFactory {
         public Optional<Direction> nextAiMove() {
             return Optional.empty();
         }
-
-        /**
-         * Determines a possible move in a random direction.
-         *
-         * @return A direction in which the ghost can move, or <code>null</code> if
-         * the ghost is shut in by inaccessible squares.
-         */
-        @Override
-        protected Direction randomMove() {
-            Square square = getSquare();
-            List<Direction> directions = new ArrayList<>();
-            for (Direction direction : Direction.values()) {
-                if (square.getSquareAt(direction).isAccessibleTo(this)) {
-                    directions.add(direction);
-                }
-            }
-            if (directions.isEmpty()) {
-                return null;
-            }
-            int i = RNG.nextInt(directions.size());
-            return directions.get(i);
-        }
     }
 }

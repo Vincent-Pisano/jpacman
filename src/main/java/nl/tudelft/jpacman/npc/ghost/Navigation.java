@@ -2,7 +2,6 @@ package nl.tudelft.jpacman.npc.ghost;
 
 import java.util.*;
 
-import nl.tudelft.jpacman.board.Board;
 import nl.tudelft.jpacman.board.Direction;
 import nl.tudelft.jpacman.board.Square;
 import nl.tudelft.jpacman.board.Unit;
@@ -102,29 +101,6 @@ public final class Navigation {
                 }
             }
         }
-        return null;
-    }
-
-    /**
-     *  Finds a subtype of Unit in a level.
-     *  This method is very useful for finding the ghosts in the parsed map.
-     *
-     * @param clazz the type to search for.
-     * @param board the board to find the unit in.
-     * @param <T> the return type, same as the type in clazz.
-     *
-     * @return the first unit found of type clazz, or null.
-     */
-    public static <T extends Unit> T findUnitInBoard(Class<T> clazz, Board board) {
-        for (int y = 0; y < board.getHeight(); y++) {
-            for (int x = 0; x < board.getWidth(); x++) {
-                final T ghost = Navigation.findUnit(clazz, board.squareAt(x, y));
-                if (ghost != null) {
-                    return ghost;
-                }
-            }
-        }
-
         return null;
     }
 

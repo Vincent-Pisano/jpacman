@@ -38,13 +38,4 @@ public class GameFactory {
     public Game createSinglePlayerGame(Level level, PointCalculator pointCalculator) {
         return new SinglePlayerGame(playerFactory.createPacMan(), level, pointCalculator);
     }
-
-    /**
-     * Returns the player factory associated with this game factory.
-     *
-     * @return The player factory associated with this game factory.
-     */
-    protected PlayerFactory getPlayerFactory() {
-        return playerFactory;
-    }
 }

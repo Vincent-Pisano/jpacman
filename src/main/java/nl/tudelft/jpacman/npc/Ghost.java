@@ -3,6 +3,7 @@ package nl.tudelft.jpacman.npc;
 import nl.tudelft.jpacman.board.Direction;
 import nl.tudelft.jpacman.board.Square;
 import nl.tudelft.jpacman.board.Unit;
+import nl.tudelft.jpacman.npc.ghost.Navigation;
 import nl.tudelft.jpacman.sprite.Sprite;
 
 import java.util.ArrayList;
@@ -81,8 +82,6 @@ public abstract class Ghost extends Unit {
         return (long) this.moveInterval + RNG.nextInt(this.intervalVariation);
     }
 
-
-
     /**
      * Determines a possible move in a random direction.
      *
@@ -103,4 +102,28 @@ public abstract class Ghost extends Unit {
          int i = RNG.nextInt(directions.size());
          return directions.get(i);
      }
+
+    protected Optional<Direction> chasePlayer() {
+        assert hasSquare();
+
+        Unit nearest = Navigation.findNearest(
+            nl.tudelft.jpacman.level.Player.class,
+            getSquare()
+        );
+
+        if (nearest == null || !nearest.hasSquare()) {
+            return Optional.empty();
+        }
+
+        Square target = nearest.getSquare();
+        List<Direction> path =
+            Navigation.shortestPath(getSquare(), target, this);
+
+        if (path == null || path.isEmpty()) {
+            return Optional.empty();
+        }
+
+        return Optional.of(path.get(0));
+    }
+
 }

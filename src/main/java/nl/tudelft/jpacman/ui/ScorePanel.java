@@ -29,7 +29,7 @@ public class ScorePanel extends JPanel {
     /**
      * The map of players and the labels their scores and lives are on.
      */
-    private final Map<Player, JLabel> playerLabels;
+    private final transient Map<Player, JLabel> playerLabels;
 
 
     /**
@@ -45,7 +45,7 @@ public class ScorePanel extends JPanel {
     /**
      * The way to format the score information.
      */
-    private ScoreFormatter scoreFormatter = DEFAULT_SCORE_FORMATTER;
+    private transient ScoreFormatter scoreFormatter = DEFAULT_SCORE_FORMATTER;
 
     /**
      * Creates a new score panel with a column for each player.

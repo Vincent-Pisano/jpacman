@@ -26,6 +26,11 @@ public class PacManUiBuilder {
     private static final String START_CAPTION = "Start";
 
     /**
+     * Caption for game must not be null.
+     */
+    private static final String GAME_NOT_NULL_CAPTION = "game must not be null";
+
+    /**
      * Map of buttons and their actions.
      */
     private final Map<String, Action> buttons;
@@ -62,7 +67,7 @@ public class PacManUiBuilder {
      * @return A new Pac-Man UI with the set keys and buttons.
      */
     public PacManUI build(final Game game) {
-        Objects.requireNonNull(game, "game must not be null");
+        Objects.requireNonNull(game, GAME_NOT_NULL_CAPTION);
 
         if (defaultButtons) {
             addStartButton(game);
@@ -79,7 +84,7 @@ public class PacManUiBuilder {
      *            The game to stop.
      */
     private void addStopButton(final Game game) {
-        Objects.requireNonNull(game, "game must not be null");
+        Objects.requireNonNull(game, GAME_NOT_NULL_CAPTION);
 
         buttons.put(STOP_CAPTION, game::stop);
     }
@@ -92,7 +97,7 @@ public class PacManUiBuilder {
      *            The game to start.
      */
     private void addStartButton(final Game game) {
-        Objects.requireNonNull(game, "game must not be null");
+        Objects.requireNonNull(game, GAME_NOT_NULL_CAPTION);
 
         buttons.put(START_CAPTION, game::start);
     }
@@ -115,25 +120,6 @@ public class PacManUiBuilder {
     }
 
     /**
-     * Adds a button to the UI.
-     *
-     * @param caption
-     *            The caption of the button.
-     * @param action
-     *            The action to execute when the button is clicked.
-     * @return The builder.
-     */
-    public PacManUiBuilder addButton(String caption, Action action) {
-        Objects.requireNonNull(caption, "caption must not be null");
-        if (caption.isEmpty()) {
-            throw new IllegalArgumentException("caption must not be empty");
-        }
-
-        buttons.put(caption, action);
-        return this;
-    }
-
-    /**
      * Adds a start and stop button to the UI. The actual actions for these
      * buttons will be added upon building the UI.
      *
@@ -146,16 +132,4 @@ public class PacManUiBuilder {
         return this;
     }
 
-    /**
-     * Provide formatter for the score.
-     *
-     * @param scoreFormatter
-     *         The score formatter to be used.
-     *
-     * @return The builder.
-     */
-    public PacManUiBuilder withScoreFormatter(ScoreFormatter scoreFormatter) {
-        this.scoreFormatter = scoreFormatter;
-        return this;
-    }
 }

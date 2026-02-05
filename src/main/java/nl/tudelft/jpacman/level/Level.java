@@ -111,16 +111,6 @@ public class Level {
     }
 
     /**
-     * Removes an observer if it was listed.
-     *
-     * @param observer
-     *            The observer to be removed.
-     */
-    public void removeObserver(LevelObserver observer) {
-        observers.remove(observer);
-    }
-
-    /**
      * Registers a player on this level, assigning him to a starting position. A
      * player can only be registered once, registering a player again will have
      * no effect.
@@ -292,7 +282,6 @@ public class Level {
      * @return The amount of pellets remaining on the board.
      */
     public int remainingPellets() {
-        Board board = getBoard();
         int pellets = 0;
         for (int x = 0; x < board.getWidth(); x++) {
             for (int y = 0; y < board.getHeight(); y++) {

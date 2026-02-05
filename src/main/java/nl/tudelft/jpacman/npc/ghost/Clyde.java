@@ -1,8 +1,6 @@
 package nl.tudelft.jpacman.npc.ghost;
 
 import nl.tudelft.jpacman.board.Direction;
-import nl.tudelft.jpacman.board.Square;
-import nl.tudelft.jpacman.board.Unit;
 import nl.tudelft.jpacman.level.Player;
 import nl.tudelft.jpacman.npc.Ghost;
 import nl.tudelft.jpacman.sprite.Sprite;
@@ -89,23 +87,22 @@ public class Clyde extends Ghost {
      */
     @Override
     public Optional<Direction> nextAiMove() {
-        assert hasSquare();
+        Optional<Direction> chase = chasePlayer();
 
-        Unit nearest = Navigation.findNearest(Player.class, getSquare());
-        if (nearest == null) {
+        if (chase.isEmpty()) {
             return Optional.empty();
         }
-        assert nearest.hasSquare();
-        Square target = nearest.getSquare();
 
-        List<Direction> path = Navigation.shortestPath(getSquare(), target, this);
-        if (path != null && !path.isEmpty()) {
-            Direction direction = path.get(0);
-            if (path.size() <= SHYNESS) {
-                return Optional.ofNullable(OPPOSITES.get(direction));
-            }
-            return Optional.of(direction);
+        List<Direction> path = Navigation.shortestPath(
+            getSquare(),
+            Navigation.findNearest(Player.class, getSquare()).getSquare(),
+            this
+        );
+
+        if (path != null && path.size() <= SHYNESS) {
+            return Optional.ofNullable(OPPOSITES.get(chase.get()));
         }
-        return Optional.empty();
+
+        return chase;
     }
 }

@@ -1,9 +1,6 @@
 package nl.tudelft.jpacman.npc.ghost;
 
 import nl.tudelft.jpacman.board.Direction;
-import nl.tudelft.jpacman.board.Square;
-import nl.tudelft.jpacman.board.Unit;
-import nl.tudelft.jpacman.level.Player;
 import nl.tudelft.jpacman.npc.Ghost;
 import nl.tudelft.jpacman.sprite.Sprite;
 
@@ -76,19 +73,6 @@ public class Blinky extends Ghost {
      */
     @Override
     public Optional<Direction> nextAiMove() {
-        assert hasSquare();
-
-        Unit nearest = Navigation.findNearest(Player.class, getSquare());
-        if (nearest == null) {
-            return Optional.empty();
-        }
-        assert nearest.hasSquare();
-        Square target = nearest.getSquare();
-
-        List<Direction> path = Navigation.shortestPath(getSquare(), target, this);
-        if (path != null && !path.isEmpty()) {
-            return Optional.ofNullable(path.get(0));
-        }
-        return Optional.empty();
+        return chasePlayer();
     }
 }
