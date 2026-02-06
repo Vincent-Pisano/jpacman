@@ -24,8 +24,7 @@ This fork contains bad smells and questionable practices (effectively making the
 2. To build JPacman without running: `./gradlew build`
 3. To see JPacman in action: `./gradlew run`
 4. To run the tests use: `./gradlew test`
+4.1. To run tests with coverage report and sonar scanner: `./gradlew clean test jacocoTestReport sonar printcov`
 5. For static analysis tools (not used in Software Reengineering): `./gradlew staticAnalysis`
 6. For static analysis tools and tests (not used in Software Reengineering): `./gradlew check`
-
-### SonarQube
-1. Run Docker containers with SonarQube: `docker compose up -d --build` in the root of the project
+7. To run SonaQube using Docker: `docker compose up -d --build`
