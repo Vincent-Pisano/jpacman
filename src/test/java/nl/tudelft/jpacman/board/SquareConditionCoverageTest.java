@@ -74,4 +74,17 @@ class SquareConditionCoverageTest {
 
         assertThat(square.checkInvariant()).isFalse();
     }
+
+    @Test
+    void linkAssertsInvariantHolds() {
+        Unit u = mock(Unit.class);
+        when(u.hasSquare()).thenReturn(true);
+        when(u.getSquare()).thenReturn(new BasicSquare()); // different square -> invariant false
+
+        square.put(u);
+
+        assertThatThrownBy(() -> square.link(new BasicSquare(), Direction.EAST))
+            .isInstanceOf(AssertionError.class);
+    }
+
 }
