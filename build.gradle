@@ -61,16 +61,39 @@ defaultTest {
     useJUnitPlatform()
 }
 
+// Console details for tests (names + failures)
+tasks.withType(Test) {
+    testLogging {
+        events "failed", "skipped"
+
+        exceptionFormat "full"
+        showExceptions true
+        showCauses true
+        showStackTraces true
+        showStandardStreams false
+    }
+}
+
 jacoco {
     toolVersion = jacocoVersion
 }
 
 jacocoTestReport {
-    executionData tasks.withType(Test)
+    dependsOn test, defaultTest
+
+    executionData fileTree(buildDir).include(
+        "jacoco/test.exec",
+        "jacoco/defaultTest.exec"
+    )
+
     reports {
         csv.enabled true
         xml.enabled true
     }
+}
+
+tasks.named("sonarqube") {
+    dependsOn jacocoTestReport
 }
 
 checkstyle {
@@ -86,8 +109,15 @@ pmd {
 sonarqube {
     properties {
         property "sonar.coverage.jacoco.xmlReportPaths",
-            "${buildDir}/reports/jacoco/test/jacocoTestReport.xml"
-        property "sonar.coverage.minimum", "80"
+                "${buildDir}/reports/jacoco/test/jacocoTestReport.xml"
+
+        property "sonar.junit.reportPaths",
+                "${buildDir}/test-results/test,${buildDir}/test-results/defaultTest"
+
+        property "sonar.tests", "src/test/java,src/default-test/java"
+
+        property "sonar.java.binaries", "${buildDir}/classes"
+
         if (localProperties.getProperty('sonar.projectKey')) {
             property "sonar.projectKey", localProperties.getProperty('sonar.projectKey')
         }

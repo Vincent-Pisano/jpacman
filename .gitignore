@@ -29,7 +29,7 @@ gradle-app.setting
 /bin
 
 .vscode/*
-
+!.vscode/settings.json
 
 .env
 

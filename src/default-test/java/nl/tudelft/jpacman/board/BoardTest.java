@@ -4,6 +4,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 
@@ -52,5 +53,30 @@ class BoardTest {
     })
     void testSquareAt(int x, int y) {
         assertThat(board.squareAt(x, y)).isEqualTo(grid[x][y]);
+    }
+
+
+    @Test
+    void withinBordersRejectsNegativeCoordinates() {
+        assertThat(board.withinBorders(-1, 0)).isFalse();
+        assertThat(board.withinBorders(0, -1)).isFalse();
+    }
+
+    @Test
+    void withinBordersRejectsTooLargeCoordinates() {
+        assertThat(board.withinBorders(2, 0)).isFalse(); // width is 2 => max x is 1
+        assertThat(board.withinBorders(0, 3)).isFalse(); // height is 3 => max y is 2
+    }
+
+    @Test
+    void squareAtThrowsWhenOutOfBounds() {
+        assertThatThrownBy(() -> board.squareAt(-1, 0))
+            .isInstanceOf(IndexOutOfBoundsException.class);
+
+        assertThatThrownBy(() -> board.squareAt(2, 0))
+            .isInstanceOf(IndexOutOfBoundsException.class);
+
+        assertThatThrownBy(() -> board.squareAt(0, 3))
+            .isInstanceOf(IndexOutOfBoundsException.class);
     }
 }
