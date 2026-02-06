@@ -92,6 +92,82 @@ jacocoTestReport {
     }
 }
 
+import java.math.BigDecimal
+import java.math.RoundingMode
+
+tasks.register("printcov") {
+    group = "verification"
+    description = "Prints overall/line/condition coverage from the JaCoCo XML report (sourcefile-level, Sonar-like)."
+    dependsOn tasks.jacocoTestReport
+
+    doLast {
+        def xmlFile = file("${buildDir}/reports/jacoco/test/jacocoTestReport.xml")
+        if (!xmlFile.exists()) {
+            logger.lifecycle("JaCoCo XML report not found at: ${xmlFile}")
+            return
+        }
+
+        def xmlText = xmlFile.getText("UTF-8")
+        xmlText = xmlText.replaceFirst("(?s)<!DOCTYPE.*?>", "")
+        def report = new XmlSlurper(false, false).parseText(xmlText)
+
+        long lineMissed = 0, lineCovered = 0
+        long branchMissed = 0, branchCovered = 0
+
+        report.'package'.each { pkg ->
+            def pkgName = pkg.@name.text() // e.g. nl/tudelft/jpacman
+            pkg.'sourcefile'.each { sf ->
+                def fileName = sf.@name.text() // e.g. Launcher.java
+                def relPath = pkgName ? "${pkgName}/${fileName}" : fileName
+
+                def src = file("src/main/java/${relPath}")
+                if (!src.exists()) return
+
+                def lc = sf.'counter'.find { it.@type.text() == "LINE" }
+                if (lc) {
+                    lineMissed += lc.@missed.toLong()
+                    lineCovered += lc.@covered.toLong()
+                }
+
+                def bc = sf.'counter'.find { it.@type.text() == "BRANCH" }
+                if (bc) {
+                    branchMissed += bc.@missed.toLong()
+                    branchCovered += bc.@covered.toLong()
+                }
+            }
+        }
+
+        long linesToCover = lineMissed + lineCovered
+        long conditionsToCover = branchMissed + branchCovered
+
+        long uncoveredLines = lineMissed
+        long uncoveredConditions = branchMissed
+
+        long totalToCover = linesToCover + conditionsToCover
+        long totalCovered = lineCovered + branchCovered
+
+        def pct = { long covered, long total ->
+            if (total == 0L) return new BigDecimal("100.0")
+            return (new BigDecimal(covered) * new BigDecimal("100.0"))
+                .divide(new BigDecimal(total), 4, RoundingMode.HALF_UP)
+        }
+
+        def fmt = { BigDecimal v -> v.setScale(1, RoundingMode.HALF_UP).toPlainString() + "%" }
+
+        logger.lifecycle("")
+        logger.lifecycle("Overall")
+        logger.lifecycle("Coverage             ${fmt(pct(totalCovered, totalToCover))}")
+        logger.lifecycle("Lines to Cover       ${linesToCover}")
+        logger.lifecycle("Uncovered Lines      ${uncoveredLines}")
+        logger.lifecycle("Line Coverage        ${fmt(pct(lineCovered, linesToCover))}")
+        logger.lifecycle("Conditions to Cover  ${conditionsToCover}")
+        logger.lifecycle("Uncovered Conditions ${uncoveredConditions}")
+        logger.lifecycle("Condition Coverage   ${fmt(pct(branchCovered, conditionsToCover))}")
+        logger.lifecycle("")
+    }
+}
+
+
 tasks.named("sonarqube") {
     dependsOn jacocoTestReport
 }
@@ -114,9 +190,22 @@ sonarqube {
         property "sonar.junit.reportPaths",
                 "${buildDir}/test-results/test,${buildDir}/test-results/defaultTest"
 
+        property "sonar.sources", "src/main/java"
         property "sonar.tests", "src/test/java,src/default-test/java"
 
-        property "sonar.java.binaries", "${buildDir}/classes"
+        property "sonar.java.binaries", "${buildDir}/classes/java/main"
+        property "sonar.java.test.binaries",
+                "${buildDir}/classes/java/test,${buildDir}/classes/java/defaultTest"
+
+        property "sonar.java.libraries",
+        configurations.runtimeClasspath.files.collect { it.absolutePath }.join(',')
+
+        property "sonar.java.test.libraries",
+                (configurations.runtimeClasspath.files + configurations.testRuntimeClasspath.files)
+                        .collect { it.absolutePath }
+                        .unique()
+                        .join(',')
+
 
         if (localProperties.getProperty('sonar.projectKey')) {
             property "sonar.projectKey", localProperties.getProperty('sonar.projectKey')
