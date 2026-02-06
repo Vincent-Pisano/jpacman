@@ -7,6 +7,7 @@ import org.junit.jupiter.api.Test;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatCode;
 
 class CollisionInteractionMapTest {
 
@@ -17,7 +18,9 @@ class CollisionInteractionMapTest {
     @Test
     void collideDoesNothingWhenNoHandlersExist() {
         CollisionInteractionMap map = new CollisionInteractionMap();
-        map.collide(new A(), new B()); // no throw
+
+        assertThatCode(() -> map.collide(new A(), new B()))
+        .doesNotThrowAnyException();
     }
 
     @Test
@@ -45,11 +48,15 @@ class CollisionInteractionMapTest {
     @Test
     void collideReturnsWhenHandlerIsNull() {
         CollisionInteractionMap map = new CollisionInteractionMap();
+        AtomicInteger calls = new AtomicInteger();
 
-        map.onCollision(A.class, B.class, false, (CollisionInteractionMap.CollisionHandler<A, B>) null);
+        map.onCollision(A.class, B.class, false,
+            (CollisionInteractionMap.CollisionHandler<A, B>) null);
+        map.collide(new A(), new B());
 
-        map.collide(new A(), new B()); // should early return, no throw
+        assertThat(calls.get()).isZero(); // explicit assertion
     }
+
 
     @Test
     void symmetricCollisionAddsInverseHandler() {

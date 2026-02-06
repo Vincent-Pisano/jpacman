@@ -2,6 +2,8 @@ package nl.tudelft.jpacman;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.util.concurrent.TimeUnit;
+
 import nl.tudelft.jpacman.board.Direction;
 import nl.tudelft.jpacman.game.Game;
 import nl.tudelft.jpacman.level.Player;
@@ -88,7 +90,7 @@ public class LauncherSmokeTest {
 
         // Sleeping in tests is generally a bad idea.
         // Here we do it just to let the monsters move.
-        Thread.sleep(5000L);
+        waitForGhostsToAct(5, TimeUnit.SECONDS);
 
         // we're close to monsters, this will now take 3 hits to die.
         for (int i = 0; i < 3; i++) {
@@ -101,6 +103,13 @@ public class LauncherSmokeTest {
 
         game.stop();
         assertThat(game.isInProgress()).isFalse();
+    }
+
+    private static void waitForGhostsToAct(long time, TimeUnit unit) {
+        long deadline = System.nanoTime() + unit.toNanos(time);
+        while (System.nanoTime() < deadline) {
+            Thread.yield(); // let other threads run without sleeping
+        }
     }
 
     /**

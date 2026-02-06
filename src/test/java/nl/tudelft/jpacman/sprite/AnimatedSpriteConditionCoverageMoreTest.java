@@ -103,7 +103,7 @@ class AnimatedSpriteConditionCoverageMoreTest {
 
         sprite.split(0, 0, 1, 1); // calls update()
 
-        assertThat(getInt(sprite, "current")).isEqualTo(0);
+        assertThat(getInt(sprite, "current")).isZero();
     }
 
     // --- reflection helpers

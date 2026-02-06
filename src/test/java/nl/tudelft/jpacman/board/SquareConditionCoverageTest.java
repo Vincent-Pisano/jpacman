@@ -83,8 +83,9 @@ class SquareConditionCoverageTest {
 
         square.put(u);
 
-        assertThatThrownBy(() -> square.link(new BasicSquare(), Direction.EAST))
+        Square neighbour = new BasicSquare();
+
+        assertThatThrownBy(() -> square.link(neighbour, Direction.EAST))
             .isInstanceOf(AssertionError.class);
     }
-
 }
